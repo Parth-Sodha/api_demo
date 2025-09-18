@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_demo/post_model.dart';
+import 'package:api_demo/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  List<Posts> postList = [];
+  List<Users> userList = [];
 
   @override
   void initState() {
@@ -23,14 +24,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getApiData() async {
-    String url = 'https://dummyjson.com/posts';
+    String url = 'https://dummyjson.com/users';
     final response = await http.get(Uri.parse(url));
 
     if(response.statusCode == 200) {
       final result = jsonDecode(response.body);
-      PostModel postModel = PostModel.fromJson(result);
+      UserModel userModel = UserModel.fromJson(result);
 
-      postList = postModel.posts!;
+      userList = userModel.users!;
     }
     setState(() {});
   }
@@ -44,10 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: ListView.builder(
-        itemCount: postList.length,
+        itemCount: userList.length,
         padding: const EdgeInsets.all(20),
           itemBuilder: (context, index) {
-            Posts model = postList[index];
+            Users model = userList[index];
             return Container(
               margin: EdgeInsets.only(bottom: 10),
               padding: EdgeInsets.all(10),
@@ -58,24 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(model.title.toString(),
+                  Text(model.firstName.toString(),
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Text(model.body.toString(),
+                  Text(model.phone.toString(),
                     style: TextStyle(fontSize: 17),
                   ),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text('Likes: ${model.reactions!.likes}',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(width: 10),
-                      Text('Dislikes: ${model.reactions!.dislikes}',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  )
                 ],
               ),
             );
